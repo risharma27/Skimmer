@@ -5,3 +5,5 @@
 *#
 *.root
 *.pyc
+SkimmedSamples/
+CondorJobsLog/
