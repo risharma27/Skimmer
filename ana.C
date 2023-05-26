@@ -13,7 +13,7 @@ void ana(int sample=0)
   //--------------------------------------------------------------------------//
   
   if(sample==0){
-    chain->Add("/home/riya/Riya/Work/Skimmer/inputs/DYJetsToLL_M-50.root");
+    chain->Add("/home/work/risharma/work/git/Skimmer/inputs/DYJetsToLL_M-50.root");
     hstfilename = "outputs/hst_DYToLL.root";
     sumfilename = "outputs/sum_DYToLL.txt";
     skimfilename = "outputs/DYToLL_skimmed.root";
@@ -23,13 +23,13 @@ void ana(int sample=0)
     m_selec.SetLep(1); //0-electron dataset, 1-muon dataset
     //m_selec.SetNNFileName("/home/arnab/Arnab/Work/PhD2021/VLLSingletStudy/MultiClassifier/SignalScore_vllneuron.txt");
   }
-  
+
   if(sample==1){
-    chain->Add("/home/riya/Riya/Work/Skimmer/inputs/ZZTo4L.root");
-    hstfilename = "outputs/hst_ZZto4L.root";
-    sumfilename = "outputs/sum_ZZto4L.txt";
-    skimfilename = "outputs/ZZto4L_skimmed.root";
-    m_selec.SetData(0); //0 - running over MC, 1 - running over Data
+    chain->Add("/home/work/risharma/work/git/Skimmer/inputs/SingleMuon_2018D_100.root");
+    hstfilename = "outputs/hst_SingleMuonData.root";
+    sumfilename = "outputs/sum_SingleMuonData.root";
+    skimfilename = "outputs/SingleMuonData_skimmed.root";
+    m_selec.SetData(1);
     m_selec.SetYear(2018);
     m_selec.SetMCwt(1);
     m_selec.SetLep(1);

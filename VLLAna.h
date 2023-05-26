@@ -1860,7 +1860,7 @@ public :
 
 
   // My functions
-  void Sort(int opt);
+  //void Sort(int opt);
   // float delta_phi(float phi1, float phi2);
   //int  MotherID(int partindex, int momindex);
   //float getInvMass(TLorentzVector a,TLorentzVector b);
@@ -1896,6 +1896,9 @@ public:
     int partonflav;
     UChar_t hadronflav;
   };
+
+  //My other functions
+  void Sortpt(vector<Lepton> vec);
   
 protected:
   Hists h;
@@ -1917,8 +1920,13 @@ private:
   TString _era;
 
   //Lepton array 
+  vector<Lepton> RecoMuon;
+  vector<Lepton> RecoElectron;
+  vector<Lepton> RecoLep;
   vector<Lepton> genMuon;
+  vector<Lepton> genElectron;
 
+  
   // Map to read text file
   map<long int,float> nnop;
   map<long int,float> nnop1;

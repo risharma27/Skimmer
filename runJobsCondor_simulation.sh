@@ -4,6 +4,5 @@ export COIN_FULL_INDIRECT_RENDERING=1
 echo $VO_CMS_SW_DIR
 source $VO_CMS_SW_DIR/cmsset_default.sh
 cd /home/work/risharma/work/CMSSW_10_3_1/src
-eval `scramv1 runtime -sh` 
-root -q -b -l /home/work/risharma/work/Skimmer/runana.C\(\"$1\",\"$2\",\"$3\",\"$4\",\"$5\",\"$6\",\"$7\"\)
-
+eval `scramv1 runtime -sh`
+root -q -b -l /home/work/risharma/work/git/Skimmer/runana.C\("$1","$2","$3","$4","$5","$6","$7"\)

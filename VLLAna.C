@@ -106,8 +106,8 @@ Bool_t VLLAna::Process(Long64_t entry)
   
   //For skimmer:
   ReadBranch();
-  nEvtSkim++;
-  skimTree->Fill();  
+  //nEvtSkim++;
+  //skimTree->Fill();  
 
   GoodEvt2018 = (_year==2018 ? *Flag_goodVertices && *Flag_globalSuperTightHalo2016Filter && *Flag_HBHENoiseFilter && *Flag_HBHENoiseIsoFilter && *Flag_EcalDeadCellTriggerPrimitiveFilter && *Flag_BadPFMuonFilter && (_data ? *Flag_eeBadScFilter : 1) : 1);
   GoodEvt2017 = (_year==2017 ? *Flag_goodVertices && *Flag_globalSuperTightHalo2016Filter && *Flag_HBHENoiseFilter && *Flag_HBHENoiseIsoFilter && *Flag_EcalDeadCellTriggerPrimitiveFilter && *Flag_BadPFMuonFilter && (_data ? *Flag_eeBadScFilter : 1) : 1);
@@ -155,44 +155,127 @@ Bool_t VLLAna::Process(Long64_t entry)
 	    genMuon.push_back(temp);
 	  }
 	}
+
+	Sortpt(genMuon);
+	
+	genElectron.clear();
+	
+	for(unsigned int i=0; i<(*nGenPart); i++){
+	  Lepton temp; temp.v.SetPtEtaPhiM(GenPart_pt[i],GenPart_eta[i],GenPart_phi[i],GenPart_mass[i]);
+	  temp.status = GenPart_status[i]; temp.ind = i; temp.pdgid = GenPart_pdgId[i]; //temp.momid=MotherID(i,GenPart_genPartIdxMother[i]);
+	  bool passcutel = abs(temp.pdgid)==11 && temp.status==1 && temp.v.Pt()>5 && fabs(temp.v.Eta())<2.4;
 	  
-	  Sort(0);//sort all genarray
+	  if(passcutel){
+	    genElectron.push_back(temp);
+	  }
+	}
+	
+	Sortpt(genElectron);
 	  
+      }    
+      
+      
+      //-----------------------------------------------------------------------------------------------------------------------
+      //                                              RECO OBJECTS BLOCK BEGINS                                                |
+      //-----------------------------------------------------------------------------------------------------------------------
+      
+      RecoLep.clear();
+      RecoMuon.clear();
+      
+      int nmu=0;
+      
+      for(unsigned int i=0; i<(*nMuon); i++){
+	Lepton temp; temp.v.SetPtEtaPhiM(Muon_pt[i],Muon_eta[i],Muon_phi[i],0.105);
+	temp.id = -13*Muon_charge[i]; temp.ind = i; temp.charge = Muon_charge[i];
+	
+	bool is_promptmuon= fabs(Muon_dxy[i])<0.05 && fabs(Muon_dz[i])<0.1;
+	bool passcutmu = temp.v.Pt()>10 && fabs(temp.v.Eta())<2.4 && Muon_mediumId[i] && Muon_pfRelIso04_all[i]<0.25;
+	
+	bool analysisCut = passcutmu && is_promptmuon;
+	
+	if(analysisCut){
+	  nmu++;
+	  RecoMuon.push_back(temp);
+	  RecoLep.push_back(temp);
+	}
       }
+      
+      Sortpt(RecoMuon);
+      
+      RecoElectron.clear();
+      int nelec=0;
+      
+      for(unsigned int i=0; i<(*nElectron); i++){
+	Lepton temp; temp.v.SetPtEtaPhiM(Electron_pt[i],Electron_eta[i],Electron_phi[i],0.000511); 
+	temp.id = -11*Electron_charge[i]; temp.ind = i; temp.charge = Electron_charge[i];
 	
+	bool is_promptelectron = false;
+	if(fabs(temp.v.Eta())<=1.479){
+	  if(fabs(Electron_dxy[i])<0.05 && fabs(Electron_dz[i])<0.1) is_promptelectron = true;
+	}
 	
-	/*==========================
-	               MET
-	  ===========================*/
-	metpt = *MET_pt;
-	metphi = *MET_phi;
+	bool passcutel = temp.v.Pt()>10 && fabs(temp.v.Eta())<2.4;
 	
-	h.etmiss->Fill(metpt);//fill a histogram with the missing Et of the event.
+	bool analysisCut = passcutel && is_promptelectron;
 	
- 	
+	if(analysisCut){
+	  nelec++;
+	  RecoElectron.push_back(temp);
+	  RecoLep.push_back(temp);
+	}
+      }
+      
+      Sortpt(RecoElectron);
+      Sortpt(RecoLep);
+      
+      /*==========================
+	           MET
+	===========================*/
+      metpt = *MET_pt;
+      metphi = *MET_phi;
+      
+      h.etmiss->Fill(metpt);//fill a histogram with the missing Et of the event.
+      
+      
+      /*===============================
+  	       Event Selection
+	===============================*/
+      
+      
+      if((int)RecoLep.size()>2){ //3 or more leptons
+	bool passTrigger = false;
+	if(abs(RecoLep.at(0).id)==13 && RecoLep.at(0).v.Pt()>26) //muon pT>26GeV
+	  passTrigger = true;
+	if(abs(RecoLep.at(0).id)==11 && RecoLep.at(0).v.Pt()>32) //electron pT>32GeV
+	   passTrigger = true;
 	
-	
-	
+	if(passTrigger){
+	  nEvtSkim++;
+	  skimTree->Fill();
+	}
+      }
+      
+      
+      
+      
       //--------------------END OF EVENT ENTRY-----------------------------// 
-      }
     }
-    return kTRUE;
+  }
+  
+  return kTRUE;
+  
 }
 
 
-void VLLAna::Sort(int opt)
+void VLLAna::Sortpt(vector<Lepton> vec)
 {
-  //Sort selected objects by pT (always descending).
-  //option 1 sorts the gooMu array
-  vector<Lepton> lep;  
-  if(opt==0){
-    //genMuon
-    for(int i=0; i<(int)genMuon.size()-1; i++){
-      for(int j=i+1; j<(int)genMuon.size(); j++){
-      } 
+  for(int i=0; i<(int)vec.size()-1; i++){
+    for(int j=i+1; j<(int)vec.size(); j++){
+	if( vec[i].v.Pt() < vec[j].v.Pt() ) swap(vec.at(i), vec.at(j));
     }
   }
 }
+
 
 void VLLAna::BookHistograms()
 {
