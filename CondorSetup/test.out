@@ -1,0 +1,17 @@
+/cvmfs/cms.cern.ch
+
+Processing /home/work/risharma/work/git/Skimmer/CondorSetup/runana.C("/home/work/alaha1/public/RunII_ULSamples/2016/UL2016Data/SingleElectron/postVFP/SingleElectronFpostVFP/SingleElectron_2016FpostVFP_1.root","test.root","test.txt","1","2016","el")...
+Processed 0 event...
+Processed 1000000 event...
+Processed 2000000 event...
+Writing Skim File...
+ Done! 
+---------------------------------------------
+Summary:
+nEvtTotal = 2292030
+nEvtGood = 2291572 (99.98 %)
+nEvtTrigger = 1266322 (55.2489 %)
+nEvtPass = 0 (0 %)
+nEvtSkim = 414
+---------------------------------------------
+Time taken by the program=37.000000sec
