@@ -15,13 +15,13 @@
 #include <TFile.h>
 #include <TString.h>
 
-void runana(TString ifname="inputfile" , TString ofname="outputfile" , TString sfname="sumfile" , TString data="data", TString year="year", TString lep="lep"){
+void runana(TString ifname="inputfile" , TString ofname="outputfile" , TString sfname="sumfile" , TString data="data", TString year="year", TString lep="lep", TString flag="flag"){
 
   TString path_to_anaCond = "/home/work/risharma/work/git/Skimmer";
   TString path_to_library = path_to_anaCond;
   
   //TString anastring =".x " + path_to_anaCond+"/anaCond.C(\""+ifname+"\",\""+ofname+"\",\""+data+"\",\""+year+"\",\""+lep+"\")"; //This is the line that is being executed.
-  TString anastring = ".x " + path_to_anaCond + "/anaCond.C(\"" + ifname + "\",\"" + ofname + "\",\"" + sfname + "\",\"" + data + "\",\"" + year + "\",\"" + lep + "\")";
+  TString anastring = ".x " + path_to_anaCond + "/anaCond.C(\"" + ifname + "\",\"" + ofname + "\",\"" + sfname + "\",\"" + data + "\",\"" + year + "\",\"" + lep + "\",\"" + flag + "\")";
 
   //cout<<"executing the following command:"<<endl;
   //cout<<anastring<<endl;

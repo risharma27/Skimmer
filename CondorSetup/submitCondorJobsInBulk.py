@@ -30,9 +30,9 @@ year = 2016
 process_signal = True
 skim = True
 #condorsamples = ["DYJetsToLL","HTbinnedWJets","WZ","TTBar","SingleElectron", "SingleMuon"]
-#condorsamples = ["ZZ"]
+condorsamples = ["ZZ"]
 #condorsamples = ["SingleMuon","SingleElectron","DYJetsToLL","HTbinnedWJets","TTBar","QCD_MuEnriched","QCD_EMEnriched","WGamma","ZGamma"]
-condorsamples =  ["DYJetsToLL","HTbinnedWJets","QCD_MuEnriched","QCD_EMEnriched","SingleTop","TTBar","WW","WZ","ZZ","WGamma","ZGamma","SingleElectron","SingleMuon"]
+#condorsamples =  ["DYJetsToLL","HTbinnedWJets","QCD_MuEnriched","QCD_EMEnriched","SingleTop","TTBar","WW","WZ","ZZ","WGamma","ZGamma","SingleElectron","SingleMuon"]
 dumpdir = "/home/work/risharma/work/git/temp/test/SkimmedSamples"
 script = "/home/work/risharma/work/git/Skimmer/CondorSetup/runana.C"
 
@@ -72,9 +72,12 @@ for item in condorsamples:
                 indir = val['samplepath']
                 data = str(val['data'])
                 lep = 'mu'
-                if samplegroup == 'EGamma' or samplegroup == 'SingleElectron': lep = 'el'
+                flag = 'flag'
+                if samplegroup == 'EGamma' or samplegroup == 'SingleElectron':
+                    lep = 'el'
+                    flag = 'electron_dataset'
 
-                arguments = f'{jobname} {indir} {dumpdir} {sample} {data} {year} {lep} {script} {skim} {debug}'
+                arguments = f'{jobname} {indir} {dumpdir} {sample} {data} {year} {lep} {flag} {script} {skim} {debug}'
                 processline = 'python3 createCondorJob.py '+arguments
 
                 if dryrun == True : print(processline)

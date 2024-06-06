@@ -159,12 +159,16 @@ Bool_t skimmer::Process(Long64_t entry)
       else if(_year==2017) {muon_trigger = (*HLT_IsoMu27==1); electron_trigger = (*HLT_Ele32_WPTight_Gsf==1);}
       else if(_year==2018) {muon_trigger = (*HLT_IsoMu24==1); electron_trigger = (*HLT_Ele27_WPTight_Gsf==1);}
 
+      bool overlapping_events = muon_trigger && electron_trigger;
+
+      //if(overlapping_events == true) cout<<"yes"<<endl;
+      
       //Muons are preferrred over electrons.
       //For the electron dataset, pick up only those events which do not fire a Muon trigger.
       //Otherwise there will be overcounting.
       
-      triggerRes = muon_trigger || (!muon_trigger && electron_trigger);
-      //triggerRes = electron_trigger || (!electron_trigger && muon_trigger);
+      triggerRes = muon_trigger || electron_trigger;
+      //if(_flag == "electron_dataset" && overlapping_events) triggerRes = false;
     }
 
 
@@ -201,48 +205,24 @@ Bool_t skimmer::Process(Long64_t entry)
 	Sortpt(genMuon);
 	Sortpt(genElectron);
       }
-
-      
-      //----------------------------------------------------------------------------------------------------------
-      //                                        EVENT SELECTION                                                   |
-      //-----------------------------------------------------------------------------------------------------------
       
 
-      //Applying trigger to MC  
-      bool single_muon = false;
-      bool single_electron = false;
- 
-      if((int)recoMuon.size()>0 && recoMuon.at(0).v.Pt()>24)            single_muon = true;
-      if((int)recoElectron.size()>0 && recoElectron.at(0).v.Pt()>27)    single_electron = true;
-       
-      bool triggered_events = false;
-      //If the event has a single muon passing the trigger, keep it.
-      if(single_muon) triggered_events=true;
-      //If the event does not pass the single muon trigger then check for the single electron trigger, if it does then keep the event.
-      else if(!single_muon && single_electron) triggered_events=true;    
+      //---------------------------------------------------------------------------------------------------------------------
+      //                                             SKIMMING STARTS                                                        |
+      //---------------------------------------------------------------------------------------------------------------------
 
-      /*
-	if(single_electron) triggered_events=true;
-	else if(!single_electron && single_muon) triggered_events=true;
-      */
-
-
-      if(triggered_events){
       
-
-	//---------------------------------------------------------------------------------------------------------------------
-	//                                             SKIMMING STARTS                                                        |
-	//---------------------------------------------------------------------------------------------------------------------
-
-	//bool is_2l_event = false;
-	//if((int)lightLep.size()>1) is_2l_event = true;
-      
-	if((int)recoLepton.size()>2){
-	  nEvtSkim++;
-	  skimTree->Fill();
+      if((int)recoLepton.size()>2){ //3L inclusive
+	bool trigger = false;
+	if(abs(recoLepton.at(0).id)==11 && recoLepton.at(0).v.Pt()>29) trigger = true;
+	if(abs(recoLepton.at(0).id)==13 && recoLepton.at(0).v.Pt()>26) trigger = true;
+	
+	if(trigger){
+	nEvtSkim++;
+	skimTree->Fill();
 	}
-      
-      }//triggered_events
+	
+      }
 
     }//triggerRes
   

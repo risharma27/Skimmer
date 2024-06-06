@@ -22,9 +22,10 @@ samplename = sys.argv[4] # input name (eg: DYJetsToLL_M50)
 data       = sys.argv[5] # "0" = mC, "1" = data
 year       = sys.argv[6]
 lep        = sys.argv[7] #"el" = electron dataset, "mu" = muon dataset
-scriptname = sys.argv[8]
-skim_str   = sys.argv[9]
-debug_str  = sys.argv[10]
+flag       = sys.argv[8] #default = "flag", if EGamma or SingleElectron "electron_dataset"
+scriptname = sys.argv[9]
+skim_str   = sys.argv[10]
+debug_str  = sys.argv[11]
 #For the old setup:
 #era = 'Z'
 #mc = 'wz'
@@ -81,7 +82,7 @@ os.system("touch "+runScript)
 os.system("chmod a+x "+runScript)
 
 #arguments = r'\(\"$1\",\"$2\",\"$3\",\"$4\",\"$5\"\)' #raw string
-arguments = r'\(\"$1\",\"$2\",\"$3\",\"$4\",\"$5\",\"$6\"\)'
+arguments = r'\(\"$1\",\"$2\",\"$3\",\"$4\",\"$5\",\"$6\",\"$7\"\)'
 #arguments = r'\(\"$1\",\"$2\",\"$3\",\"$4\",\"$5\",\"$6\",\"$7\"\)' #for the old setup
 processline = 'root -q -b -l '+scriptname+arguments
 
@@ -149,7 +150,7 @@ for filename in input_files:
             "error = "+LOGDIR+"//$(Cluster)_data_"+filename+".err",
             "log = "+LOGDIR+"//$(Cluster)_data_"+filename+".out",
             #"arguments = "+INDIR+"/"+filename+" "+OUTDIR+"//$(Cluster)_"+ofile+"_data.root "+str(data)+" "+str(year)+" "+str(lep),
-            "arguments = "+INDIR+"/"+filename+" "+OUTDIR+"//$(Cluster)_"+ofile+" "+SUMDIR+"//$(Cluster)_"+sfile+" "+str(data)+" "+str(year)+" "+str(lep),
+            "arguments = "+INDIR+"/"+filename+" "+OUTDIR+"//$(Cluster)_"+ofile+" "+SUMDIR+"//$(Cluster)_"+sfile+" "+str(data)+" "+str(year)+" "+str(lep)+" "+str(flag),
             #"arguments = "+INDIR+"/"+filename+" "+OUTDIR+"//$(Cluster)_"+ofile+"_"+str(filecount)+".root "+str(data)+" "+str(year)+" "+str(lep)+" "+str(era)+" "+str(mc),#for the old setup
             "queue",
             ""

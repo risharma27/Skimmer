@@ -39,6 +39,7 @@ void ana(int sample=0){
     //Set some options
     m_selec.SetData(1); //MC=0, data=1
     m_selec.SetYear(2016);
+    m_selec.SetFlag("electron_dataset");
   }
 
   if(sample==2){
