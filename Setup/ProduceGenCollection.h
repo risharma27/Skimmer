@@ -2,7 +2,7 @@
 
 void skimmer::GenLeptonArray(){
 
-  for(unsigned int i=0; i<(*nGenPart); i++){
+  for(int i=0; i<(*nGenPart); i++){
     Lepton temp;
     temp.status = GenPart_status[i];
     if(temp.status==1){
@@ -16,8 +16,9 @@ void skimmer::GenLeptonArray(){
       else lepcharge=1;
       temp.charge = lepcharge;
 	
-      bool passcutmu = abs(temp.pdgid)==13 && temp.v.Pt()>10 && abs(temp.v.Eta())<2.4;
-      bool passcutel = abs(temp.pdgid)==11 && temp.v.Pt()>10 && abs(temp.v.Eta())<2.4;
+      bool passcutmu = abs(temp.pdgid)==13 && temp.v.Pt()>10 && fabs(temp.v.Eta())<2.4;
+      bool passcutel = abs(temp.pdgid)==11 && temp.v.Pt()>10 && fabs(temp.v.Eta())<2.4;
+      
       if(passcutmu){
 	genMuon.push_back(temp);
       }

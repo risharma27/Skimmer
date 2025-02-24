@@ -6,7 +6,9 @@ void skimmer::ActivateBranch(TTree *t){
   //Make sure to include all branches which are being used in the codes.
   //DON'T USE THIS FUNCTION if you want to keep the same tree structure in the skimmed file.
   //Keepting the same structure is helpful, because the same analysis script works on it.
-  
+
+  //t->SetBranchStatus("*", 1);
+
   for(auto activeBranchName : {"run","luminosityBlock","event", "HLT_IsoMu20","HLT_IsoMu24","HLT_IsoMu27","HLT_Ele32_WPTight_Gsf","HLT_Ele27_WPTight_Gsf","Flag_*","nMuon","Muon_*","nElectron","Electron_*","nTau","Tau_*","nJet","Jet_*","MET_*","PuppiMET_*","nTrigObj","TrigObj_*", "nPhoton", "Photon_*"})
     t->SetBranchStatus(activeBranchName, 1);
 
@@ -14,6 +16,7 @@ void skimmer::ActivateBranch(TTree *t){
     for(auto activeBranchName : {"nGenPart","GenPart_*","nGenJet","GenJet_*","nGenVisTau","GenVisTau_*","btagWeight_DeepCSVB","GenMET_phi","GenMET_pt"})
       t->SetBranchStatus(activeBranchName, 1);
   }
+  
 }
 
 void skimmer::ReadBranch(){
@@ -321,7 +324,8 @@ void skimmer::ReadBranch(){
       GenPart_statusFlags[i];
     }
   }
-  
+
+  /*
   //PV  
   *nOtherPV;
   for(unsigned int i=0; i<(*nOtherPV); i++){
@@ -345,7 +349,17 @@ void skimmer::ReadBranch(){
     SV_dxySig[i];
     SV_pAngle[i];
     SV_charge[i];
+    SV_chi2[i];
+    SV_eta[i];
+    SV_mass[i];
+    SV_ndof[i];
+    SV_phi[i];
+    SV_pt[i];
+    SV_x[i];
+    SV_y[i];
+    SV_z[i];
+    SV_ntracks[i];
   }
-  
+  */
   
 }//ReadBranch()

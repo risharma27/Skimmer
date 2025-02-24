@@ -2,7 +2,7 @@
 # This takes all the Physics processes mentioned in the list and submits condor job for them
 # using createCondorJob.py. The way I am reading the input files from the specific directories
 # depends on how they are kept. So, adjust your json file accordingly.
-# Make sure to make chnages to runana.C also, if you want to use codes from a different directory.
+# Make sure to make changes to runana.C also, if you want to use codes from a different directory.
 ###################################################################################################
 #Make sure to use python3 for this.
 
@@ -30,9 +30,10 @@ year = 2016
 process_signal = True
 skim = True
 #condorsamples = ["DYJetsToLL","HTbinnedWJets","WZ","TTBar","SingleElectron", "SingleMuon"]
-condorsamples = ["ZZ"]
+#condorsamples = ["ZZ"]
 #condorsamples = ["SingleMuon","SingleElectron","DYJetsToLL","HTbinnedWJets","TTBar","QCD_MuEnriched","QCD_EMEnriched","WGamma","ZGamma"]
-#condorsamples =  ["DYJetsToLL","HTbinnedWJets","QCD_MuEnriched","QCD_EMEnriched","SingleTop","TTBar","WW","WZ","ZZ","WGamma","ZGamma","SingleElectron","SingleMuon"]
+condorsamples =  ["DYJetsToLL","HTbinnedWJets","QCD_MuEnriched","QCD_EMEnriched","SingleTop","TTBar","WW","WZ","ZZ","WGamma","ZGamma","TTZ","TTW","SingleElectron","SingleMuon"]
+#condorsamples = ["SingleMuon"]
 dumpdir = "/home/work/risharma/work/git/temp/test/SkimmedSamples"
 script = "/home/work/risharma/work/git/Skimmer/CondorSetup/runana.C"
 
@@ -76,6 +77,9 @@ for item in condorsamples:
                 if samplegroup == 'EGamma' or samplegroup == 'SingleElectron':
                     lep = 'el'
                     flag = 'electron_dataset'
+                if samplegroup == 'SingleMuon':
+                    lep = 'mu'
+                    flag = 'muon_dataset'
 
                 arguments = f'{jobname} {indir} {dumpdir} {sample} {data} {year} {lep} {flag} {script} {skim} {debug}'
                 processline = 'python3 createCondorJob.py '+arguments
@@ -86,7 +90,6 @@ for item in condorsamples:
                 if test == True: break #only for one subsample
 
         if test==True : break #only for one sample
-
 
 end_time = time.time()
 time_taken = end_time-start_time

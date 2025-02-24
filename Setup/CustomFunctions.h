@@ -34,7 +34,7 @@ std::pair<vector<int>, vector<float>> skimmer::dR_matching(vector<Lepton> vec1, 
 	delR_min=delR; match=j;
       }
     }
-    if(delR_min<dRcut){
+    if(delR_min<dRcut && match>-1){
       foundMatch.push_back(match);
       delRmin.push_back(delR_min);
     }
@@ -72,6 +72,32 @@ bool skimmer::clean_from_array(Lepton target, vector<Lepton> array, float dRcut)
   //then the target is not isolated.
   if(dRmin < dRcut) result = false;
   return result;
+}
+
+int skimmer::electronCustomID(Int_t bitmap, int quality, int skipCut){
+        
+  int qualityPass=1;
+  for(int i=0;i<10;i++){
+    if(i==skipCut)continue;
+    if(((bitmap>>i*3) & 0x7)<quality){qualityPass=0;break;}
+  }
+    
+  return qualityPass;
+}
+
+int skimmer::electronCustomId(Int_t bitmap, int quality, vector<int>skipCut){
+    
+  int qualityPass = 1;
+  
+  for(int i=0; i<10; i++){
+    if(find(skipCut.begin(), skipCut.end(), i) != skipCut.end()) continue;    
+    if(((bitmap>>(i*3)) & 0x7)<quality){
+      qualityPass=0;
+      break;
+    }
+  }
+  
+  return qualityPass;
 }
 
 vector<int> skimmer::pt_binning_count(vector<Lepton> vec)

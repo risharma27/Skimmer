@@ -11,14 +11,16 @@
 #include <TFile.h>
 //#include <boost/lexical_cast.hpp>// for lexical_cast()
 
-void anaCond( TString ifname , TString ofname , TString sfname, TString data, TString year, TString lep)
+void anaCond( TString ifname , TString ofname , TString sfname, TString data, TString year, TString lep, TString flag)
 {
   //Description of the parameters:
   //1. ifname : Input file name with full path.
   //2. ofname : Output file name with full path.
-  //3. data   : 0, or 1 depedning on whether 'ifname' is MC or data.
-  //4. year   : Which year of data taking. (affects trigger paths and efficiencies)
-  //5. lep    : If muon dataset, lep=1, if electron dataset, lep=0
+  //3. sfname : Sum file name containing basic events info.
+  //4. data   : 0, or 1 depedning on whether 'ifname' is MC or data.
+  //5. year   : Which year of data taking. (affects trigger paths and efficiencies)
+  //6. lep    : If muon dataset, lep=1, if electron dataset, lep=0
+  //7. flag   : set flag to "electron_dataset" or "muon_dataset" based on the dataset. This flag is used in the trigger definition in my analysis code.
 
   gROOT->Time();
   const char *skimfilename;
@@ -56,10 +58,14 @@ void anaCond( TString ifname , TString ofname , TString sfname, TString data, TS
   //m_selec.SetEra(1);
 
   //SetLep:
-  //This parameter decides whether we are working with muon or electron dataset:
+  //This parameter decides whether we are working with muon or electron dataset
   m_selec.SetLep(1);
   if(lep=="el") m_selec.SetLep(0);
   if(lep=="mu") m_selec.SetLep(1);
+
+  //SetFlag
+  
+  m_selec.SetFlag(flag);
   
   chain->Process(&m_selec);
   gROOT->Time();
